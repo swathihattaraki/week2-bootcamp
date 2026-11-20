@@ -1,0 +1,9 @@
+{
+  "name": "day3",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env src/server.js",
+    "dev": "node --watch src/server.js",
+    "cli": "node src/cli.js"
+  }
+}

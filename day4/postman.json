@@ -1,0 +1,55 @@
+{
+  "info": {
+    "name": "Day 4 - Employee Management API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. GET Employees (List + Search + Pagination)",
+      "request": { "method": "GET", "url": "http://localhost:3001/api/employees?page=1&limit=2&search=a" }
+    },
+    {
+      "name": "2. GET Employee by ID (Success)",
+      "request": { "method": "GET", "url": "http://localhost:3001/api/employees/1" }
+    },
+    {
+      "name": "3. GET Employee by ID (Not Found - 404)",
+      "request": { "method": "GET", "url": "http://localhost:3001/api/employees/999" }
+    },
+    {
+      "name": "4. GET Employee by ID (Invalid ID - 400)",
+      "request": { "method": "GET", "url": "http://localhost:3001/api/employees/abc" }
+    },
+    {
+      "name": "5. POST Create Employee (Success - 201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Meera Krishnan\",\n  \"email\": \"meera@company.com\",\n  \"role\": \"QA Lead\",\n  \"department\": \"IT\"\n}" },
+        "url": "http://localhost:3001/api/employees"
+      }
+    },
+    {
+      "name": "6. POST Create Employee (Invalid Input - 400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"invalid-email\"\n}" },
+        "url": "http://localhost:3001/api/employees"
+      }
+    },
+    {
+      "name": "7. PATCH Update Employee (Success - 200)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"role\": \"Senior Engineer\"\n}" },
+        "url": "http://localhost:3001/api/employees/1"
+      }
+    },
+    {
+      "name": "8. DELETE Employee (Success - 200)",
+      "request": { "method": "DELETE", "url": "http://localhost:3001/api/employees/3" }
+    }
+  ]
+}

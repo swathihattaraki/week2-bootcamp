@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Week 2 Full-Stack Bootcamp</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f9fafb; color: #111827; padding: 2rem 1rem; }
+    .container { max-width: 860px; margin: 0 auto; }
+    header { background: #1e293b; color: #fff; padding: 1.5rem 2rem; border-radius: 10px; margin-bottom: 1.5rem; }
+    header h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    header p { color: #cbd5e1; font-size: 0.9rem; }
+    .card { background: #fff; border-radius: 10px; padding: 1.5rem; margin-bottom: 1.5rem; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .card h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #111827; }
+    .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+    input, select { flex: 1; min-width: 150px; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.88rem; }
+    input:focus, select:focus { outline: none; border-color: #111827; }
+    button { background: #111827; color: #fff; border: 1px solid #111827; padding: 0.5rem 0.9rem; border-radius: 6px; font-size: 0.88rem; font-weight: 500; cursor: pointer; }
+    button:hover { background: #1f2937; }
+    button.secondary { background: #fff; color: #374151; border: 1px solid #d1d5db; }
+    button.secondary:hover { background: #f3f4f6; }
+    button.danger { background: #dc2626; border-color: #dc2626; padding: 0.5rem 0.9rem; font-size: 0.88rem; }
+    button.danger.sm { padding: 0.25rem 0.55rem; font-size: 0.8rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.88rem; }
+    th, td { text-align: left; padding: 0.6rem; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f8fafc; font-weight: 600; color: #374151; }
+    pre { background: #f8fafc; color: #334155; padding: 0.85rem; border-radius: 6px; font-size: 0.83rem; overflow-x: auto; margin-top: 0.75rem; border: 1px solid #e2e8f0; border-left: 3px solid #94a3b8; }
+    pre.ok { background: #f0fdf4; border-color: #bbf7d0; border-left-color: #16a34a; color: #14532d; }
+    pre.err { background: #fef2f2; border-color: #fecaca; border-left-color: #dc2626; color: #7f1d1d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Week 2 Full-Stack Bootcamp</h1>
+      <p>Backend Development & Database Engineering Dashboard</p>
+    </header>
+
+    <!-- Day 3 Card -->
+    <div class="card">
+      <h2>Day 3: Node.js Server & JSON Validator</h2>
+      <div class="controls">
+        <button class="secondary" onclick="checkApi('/health')">Check /health</button>
+        <button class="secondary" onclick="checkApi('/api/info')">Check /api/info</button>
+      </div>
+      <div class="controls">
+        <input type="text" id="file-input" placeholder="Enter filename (e.g. sample.json or malformed.json)" />
+        <button onclick="validateFile()">Validate JSON</button>
+      </div>
+      <pre id="day3-out">Click a button or enter a JSON filename to inspect responses...</pre>
+    </div>
+
+    <!-- Day 4 Card -->
+    <div class="card">
+      <h2>Day 4: Employee Management API</h2>
+      <div class="controls">
+        <input type="text" id="emp-name" placeholder="Name" />
+        <input type="email" id="emp-email" placeholder="Email" />
+        <input type="text" id="emp-role" placeholder="Role" />
+        <input type="text" id="emp-dept" placeholder="Department" />
+        <button id="save-btn" onclick="saveEmployee()">Add Employee</button>
+        <button id="cancel-btn" class="secondary" style="display:none" onclick="resetForm()">Cancel</button>
+      </div>
+      <div class="controls">
+        <button class="secondary" onclick="loadEmployees()">Get Employees</button>
+        <input type="text" id="emp-search" placeholder="Search name or email..." oninput="if(isLoaded) loadEmployees()" />
+        <select id="emp-filter" onchange="if(isLoaded) loadEmployees()">
+          <option value="">All Departments</option>
+          <option value="IT">IT</option>
+          <option value="HR">HR</option>
+          <option value="Product">Product</option>
+          <option value="Application Developer">Application Developer</option>
+        </select>
+      </div>
+      <table id="emp-table-wrap" style="display:none">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Dept</th><th>Action</th></tr>
+        </thead>
+        <tbody id="emp-table"></tbody>
+      </table>
+      <pre id="day4-out">Click "Get Employees" to load employee records...</pre>
+    </div>
+
+    <!-- Day 5 Card -->
+    <div class="card">
+      <h2>Day 5: Authentication & Role-Based Access</h2>
+      <div class="controls">
+        <input type="text" id="auth-name" placeholder="Name (for Register)" />
+        <input type="email" id="auth-email" placeholder="Email" />
+        <input type="password" id="auth-password" placeholder="Password (min 6 chars)" />
+        <select id="auth-role">
+          <option value="user">Role: user</option>
+          <option value="admin">Role: admin</option>
+        </select>
+      </div>
+      <div class="controls">
+        <button onclick="handleAuth('/api/auth/register')">Register</button>
+        <button onclick="handleAuth('/api/auth/login')">Login</button>
+        <button class="secondary" onclick="callProtected('/api/user/profile')">User Profile</button>
+        <button class="secondary" onclick="callProtected('/api/admin/dashboard')">Admin Dashboard</button>
+        <button class="secondary" onclick="resetPassword()">Reset Password</button>
+        <button class="danger" onclick="logoutUser()">Logout</button>
+      </div>
+      <pre id="day5-out">Register or login to get a JWT token and test protected routes...</pre>
+    </div>
+  </div>
+
+  <script>
+    let editingId = null;
+    let isLoaded = false;
+
+    // --- Day 3 Functions ---
+    async function checkApi(url) {
+      const out = document.getElementById('day3-out');
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+        out.className = res.ok ? 'ok' : 'err';
+        out.textContent = JSON.stringify(data, null, 2);
+      } catch {
+        out.className = 'err';
+        out.textContent = 'Error connecting to server';
+      }
+    }
+
+    function validateFile() {
+      const file = document.getElementById('file-input').value.trim();
+      checkApi(`/api/validate?file=${encodeURIComponent(file)}`);
+    }
+
+    // --- Day 4 Functions ---
+    function showEmpMsg(data, isOk) {
+      const out = document.getElementById('day4-out');
+      out.className = isOk ? 'ok' : 'err';
+      out.textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function loadEmployees() {
+      isLoaded = true;
+      const search = document.getElementById('emp-search').value.trim();
+      const department = document.getElementById('emp-filter').value;
+      const params = new URLSearchParams({ page: 1, limit: 100, search, department });
+      const res = await fetch(`/api/employees?${params}`);
+      const result = await res.json();
+      document.getElementById('emp-table-wrap').style.display = 'table';
+      const tbody = document.getElementById('emp-table');
+      tbody.innerHTML = result.data.map(e => `
+        <tr>
+          <td>${e.id}</td>
+          <td>${e.name}</td>
+          <td>${e.email}</td>
+          <td>${e.role}</td>
+          <td>${e.department}</td>
+          <td>
+            <button class="secondary" style="padding:0.25rem 0.55rem;font-size:0.8rem" onclick="startEdit(${e.id})">Edit</button>
+            <button class="danger sm" onclick="deleteEmployee(${e.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+      showEmpMsg({ endpoint: 'GET /api/employees', totalRecords: result.total, employees: result.data }, true);
+    }
+
+    async function startEdit(id) {
+      const res = await fetch(`/api/employees/${id}`);
+      const emp = await res.json();
+      if (!res.ok) return showEmpMsg(emp, false);
+
+      editingId = id;
+      document.getElementById('emp-name').value = emp.name;
+      document.getElementById('emp-email').value = emp.email;
+      document.getElementById('emp-role').value = emp.role;
+      document.getElementById('emp-dept').value = emp.department;
+      document.getElementById('save-btn').textContent = 'Update Employee';
+      document.getElementById('cancel-btn').style.display = 'inline-block';
+      showEmpMsg({ editingEmployeeId: id, currentDetails: emp }, true);
+    }
+
+    function resetForm(reload = true) {
+      editingId = null;
+      ['emp-name', 'emp-email', 'emp-role', 'emp-dept'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('save-btn').textContent = 'Add Employee';
+      document.getElementById('cancel-btn').style.display = 'none';
+      if (reload && isLoaded) loadEmployees();
+    }
+
+    async function saveEmployee() {
+      const payload = {
+        name: document.getElementById('emp-name').value,
+        email: document.getElementById('emp-email').value,
+        role: document.getElementById('emp-role').value,
+        department: document.getElementById('emp-dept').value
+      };
+      const url = editingId ? `/api/employees/${editingId}` : '/api/employees';
+      const method = editingId ? 'PATCH' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        resetForm(false);
+        await loadEmployees();
+      }
+      showEmpMsg(data, res.ok);
+    }
+
+    async function deleteEmployee(id) {
+      if (editingId === id) resetForm(false);
+      const res = await fetch(`/api/employees/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok) await loadEmployees();
+      showEmpMsg(data, res.ok);
+    }
+
+    // --- Day 5 Functions ---
+    function showAuthMsg(status, data, isOk) {
+      const out = document.getElementById('day5-out');
+      out.className = isOk ? 'ok' : 'err';
+      out.textContent = `Status: ${status}\n` + JSON.stringify(data, null, 2);
+    }
+
+    function clearAuthForm() {
+      ['auth-name', 'auth-email', 'auth-password'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('auth-role').value = 'user';
+    }
+
+    async function handleAuth(url) {
+      const payload = {
+        name: document.getElementById('auth-name').value,
+        email: document.getElementById('auth-email').value,
+        password: document.getElementById('auth-password').value,
+        role: document.getElementById('auth-role').value
+      };
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        clearAuthForm();
+        if (url.includes('register')) {
+          alert('Registered successfully!');
+        } else {
+          localStorage.setItem('jwt_token', data.token);
+          alert('Login successfully!');
+        }
+      }
+
+      showAuthMsg(res.status, data, res.ok);
+    }
+
+    async function callProtected(url) {
+      const token = localStorage.getItem('jwt_token');
+      const res = await fetch(url, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      const data = await res.json();
+      showAuthMsg(res.status, data, res.ok);
+    }
+
+    async function resetPassword() {
+      const email = document.getElementById('auth-email').value.trim();
+      const newPassword = document.getElementById('auth-password').value;
+      if (!email || !newPassword) return alert('Enter your Email and New Password in the boxes above first.');
+
+      const res = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, newPassword })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        clearAuthForm();
+        alert(data.message);
+      }
+      showAuthMsg(res.status, data, res.ok);
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('jwt_token');
+      showAuthMsg(200, { message: 'Logged out. JWT token removed from browser.' }, true);
+    }
+  </script>
+</body>
+</html>
